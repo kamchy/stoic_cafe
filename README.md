@@ -60,7 +60,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Stoic Cafe Screen Shot][product-screenshot]](https://github.com/kamchy/stoic_cafe)
+![Stoic Cafe Screen Shot](images/screenshot.png)
 
 This is my playground, nothing serious, just having fun and learning.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -72,11 +72,11 @@ This is my playground, nothing serious, just having fun and learning.
 * [![Spring Boot][boot.io]][Spring-boot]
 * [![React][React.js]][React-url]
 * [![Java][Java-badge]][Java-url]
-* [![Docker][Docker.io]][Docker-url]
-* [![Postgresql][Svelte.dev]][Svelte-url]
-* [![Liquibase][Laravel.com]][Laravel-url]
-* [![Git][Bootstrap.com]][Bootstrap-url]
-* [![Maven][JQuery.com]][JQuery-url]
+* [![Docker][Docker-badge]][Docker-url]
+* [![Postgresql][Postgres-badge]][postgres-url]
+* [![Liquibase][Liquibase-badge]][Liquibase-url]
+* [![Git][Git-badge]][Git-url]
+* [![Maven][Maven-badge]][Maven-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -85,16 +85,13 @@ This is my playground, nothing serious, just having fun and learning.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+You may try to build this project locally and start two containers: application container and and postgresql container. See `docker-compose.yaml` for details.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+* docker
+* maven 
+* git 
 
 ### Installation
 
@@ -187,11 +184,6 @@ Blog posts:
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/kamchy/stoic_cafe.svg?style=for-the-badge
@@ -212,5 +204,13 @@ Blog posts:
 [React-url]: https://reactjs.org/
 [Java-badge]: https://img.shields.io/badge/openjdk-35495E?style=for-the-badge&logo=openjdk&logoColor=0000
 [Java-url]: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
-[Docker-badge]: https://img.shields.io/badge/docker?style=for-the-badge&logo=docker
+[Docker-badge]: https://img.shields.io/badge/docker-35495E?style=for-the-badge&logo=docker
 [Docker-url]: https://docs.docker.com
+[Postgres-badge]: https://img.shields.io/badge/postgresql-35495E?style=for-the-badge&logo=postgresql&logoColor=0000
+[Postgres-url]: https://postgresql.org
+[Git-badge]: https://img.shields.io/badge/git-35495E?style=for-the-badge&logo=git&logoColor=0000
+[Git-url]: https://git-scm.org
+[Maven-badge]: https://img.shields.io/badge/maven-35495E?style=for-the-badge&logo=maven&logoColor=0000
+[Maven-url]: https://maven.org
+[Liquibase-badge]: https://img.shields.io/badge/liquibase-35495E?style=for-the-badge&logo=liquibase&logoColor=0000
+[Liquibase-url]: https://liquibase.org
