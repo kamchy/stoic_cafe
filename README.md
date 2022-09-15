@@ -69,10 +69,10 @@ This is my playground, nothing serious, just having fun and learning.
 
 ### Built With
 
-* [![Spring Boot][spring.io]][Next-url]
+* [![Spring Boot][boot.io]][Spring-boot]
 * [![React][React.js]][React-url]
-* [![Java][Vue.js]][Vue-url]
-* [![Docker][Angular.io]][Angular-url]
+* [![Java][Java-badge]][Java-url]
+* [![Docker][Docker.io]][Docker-url]
 * [![Postgresql][Svelte.dev]][Svelte-url]
 * [![Liquibase][Laravel.com]][Laravel-url]
 * [![Git][Bootstrap.com]][Bootstrap-url]
@@ -206,20 +206,11 @@ Blog posts:
 [license-url]: https://github.com/kamchy/stoic_cafe/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/kamila_chyla
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
+[boot.io]: https://img.shields.io/badge/boot.io-000000?style=for-the-badge&logo=springboot&logoColor=6DB33F
+[Spring-boot]: https://boot.io
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[Java-badge]: https://img.shields.io/badge/openjdk-35495E?style=for-the-badge&logo=openjdk&logoColor=0000
+[Java-url]: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
+[Docker-badge]: https://img.shields.io/badge/docker?style=for-the-badge&logo=docker
+[Docker-url]: https://docs.docker.com
