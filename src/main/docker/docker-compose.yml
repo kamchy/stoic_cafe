@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  app:
+    image: 'docker-stoic:latest'
+
+    build:
+      context: .
+    container_name: boot-stoic-docker-app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stoic_db
+      - SPRING_DATASOURCE_USERNAME=stoic
+      - SPRING_DATASOURCE_PASSWORD=stoic
+    ports:
+      - "8081:8080"
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=stoic
+      - POSTGRES_PASSWORD=stoic
+      - POSTGRES_DB=stoic_db
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
