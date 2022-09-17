@@ -22,6 +22,7 @@ import com.kamilachyla.stoic.model.thought.Thought;
 @RestController
 @RequestMapping(path = "/quote")
 public class QuoteController {
+    public static final String MANAGEMENT_STRING = "Hello, Java";
     private final StoicService service;
     private final Logger log = LoggerFactory.getLogger(QuoteController.class);
 
@@ -34,7 +35,7 @@ public class QuoteController {
 
     @PostMapping("/")
     public ResponseEntity<Quote> addQuote(@RequestBody ClientQuote q) {
-        var savedQuote = service.SaveQuote(new Quote(new Quote.Author(q.author), new Quote.Text(q.text)));
+        var savedQuote = service.saveQuote(new Quote(new Quote.Author(q.author), new Quote.Text(q.text)));
         if (savedQuote == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -51,11 +52,11 @@ public class QuoteController {
 
     @GetMapping("/ms")
     public String getManagementString() {
-        return "Tu kamila";
+        return MANAGEMENT_STRING;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Quote> getQuote(@PathVariable("id") int id) {
+    public ResponseEntity<Quote> getQuote(@PathVariable("id") long id) {
         return service.getQuoteById(id).map(q -> ResponseEntity.ok(q)).orElse(ResponseEntity.notFound().build());
     }
 

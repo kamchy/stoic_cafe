@@ -25,10 +25,10 @@ public class StoicService {
     }
 
 
-    public Quote SaveQuote(Quote q) {
-        q = repo.save(q);
-        logger.info("Saved {}", q);
-        return q;
+    public Quote saveQuote(Quote q) {
+        Quote res = repo.save(q);
+        logger.info("Saved {}", res);
+        return res;
     }
 
     public Optional<Quote> getQuoteById(long id) {

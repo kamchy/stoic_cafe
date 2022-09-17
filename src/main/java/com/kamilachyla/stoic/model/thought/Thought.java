@@ -11,6 +11,8 @@ import java.time.format.DateTimeFormatter;
         @UniqueConstraint(name = "uc_thought_text", columnNames = {"text"})
 })
 public class Thought {
+    public static final String STRING_FMT = "[Date: %s, Th: %s, Q: %s]";
+    private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Id
     @GeneratedValue
     private Long id;
@@ -23,6 +25,7 @@ public class Thought {
     public String getText() {
         return text;
     }
+
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -54,7 +57,10 @@ public class Thought {
 
     @Override
     public String toString() {
-        return "[Date: %s, Th: %s, Q: %s]".formatted(dateTime.format(DateTimeFormatter.ISO_DATE_TIME), text, quote.toString());
+        return STRING_FMT.formatted(
+                dateTime.format(DATE_TIME_FORMAT),
+                text,
+                quote == null ? "Null quote!" : quote.toString());
     }
 
     public static Thought of(String text, LocalDateTime now, Quote quote) {

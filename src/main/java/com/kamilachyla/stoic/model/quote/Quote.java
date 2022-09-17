@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.List;
         name = "uc_quote_text",
         columnNames = {"text"}))
 public class Quote {
-    @OneToMany(mappedBy = "quote")
+    @OneToMany(mappedBy = "quote", fetch = FetchType.EAGER)
     @JsonIgnore
     List<Thought> thoughts;
     @Id
@@ -58,6 +59,10 @@ public class Quote {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @JsonProperty
     public int thoughtsCount() {
         return thoughts == null ? 0 : thoughts.size();
@@ -66,6 +71,19 @@ public class Quote {
     @Override
     public String toString() {
         return "[ID: %d, Author: %s, Quote: %s, Thoughts count: %d]".formatted(id, author, text, thoughtsCount());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Quote quote = (Quote) o;
+        return Objects.equals(author, quote.author) && Objects.equals(text, quote.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, text);
     }
 
     public record Author(String name) {

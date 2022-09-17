@@ -2,3 +2,15 @@ HELP.md
 target/
 .idea/
 .vscode/
+.classpath
+.project
+mvnw
+mvnw.cmd
+stoic.iml
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.jdt.apt.core.prefs
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.m2e.core.prefs
+src/main/docker/stoic-0.0.1-SNAPSHOT.jar

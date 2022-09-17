@@ -1,20 +1,23 @@
 package com.kamilachyla.stoic.model.api;
 
+import com.kamilachyla.stoic.model.quote.Quote;
 import com.kamilachyla.stoic.model.thought.Thought;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/thought")
+@RequestMapping("/thought/")
 public class ThoughtController {
     private final StoicService service;
-
-    ThoughtController(StoicService service) {
+    private final TimeService timeService;
+    ThoughtController(StoicService service, TimeService timeService) {
         this.service = service;
+        this.timeService = timeService;
     }
 
     @GetMapping
@@ -33,19 +36,33 @@ public class ThoughtController {
 
     @PostMapping
     public ResponseEntity<Thought> postThought(@RequestBody ClientThought th) {
-        var thought = Thought.of(th.text(), LocalDateTime.now(), service.getQuoteById(th.quoteId()).orElse(null));
+        final var quoteById = service.getQuoteById(th.quoteId());
+        if (quoteById.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var thought = Thought.of(th.text(), timeService.get(), quoteById.get());
         var savedThought = service.saveThought(thought);
         if (savedThought == null) {
             return ResponseEntity.notFound().build();
         } else {
-            var uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(savedThought.getId())
-                    .toUri();
+            var uri = uriWithId(savedThought.getId());
 
             return ResponseEntity.created(uri).location(uri)
                     .body(savedThought);
         }
 
+    }
+
+
+    @DeleteMapping("/{id}")
+    public void deleteQuote(@PathVariable("id") Long id) {
+        service.deleteThought(id);
+    }
+
+    static URI uriWithId(long id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
     }
 }
