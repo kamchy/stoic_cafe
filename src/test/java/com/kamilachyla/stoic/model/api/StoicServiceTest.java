@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,6 +44,7 @@ class StoicServiceTest {
         Mockito.verifyNoInteractions(tr);
     }
 
+
     @Test
     void getQuoteById() {
         final var q = TestUtils.createQuoteWithId(expectedText, expectedAuthor, expectedId);
@@ -73,8 +75,22 @@ class StoicServiceTest {
 
     @Test
     void saveThought() {
-        Thought th = Thought.of("text", LocalDateTime.now(), new Quote());
-        Mockito.when(tr.save(Mockito.any(Thought.class))).thenReturn(TestUtils.withThoughtId(th, 123));
+        final var text = "text";
+        final var now = LocalDateTime.now();
+        final var thoughtId = 123L;
+        Thought th = Thought.of(text, now, new Quote());
+        Mockito.when(tr.save(Mockito.any(Thought.class))).thenReturn(TestUtils.withThoughtId(th, thoughtId));
+        Thought saved = stoicService.saveThought(th);
+        assertEquals(thoughtId, saved.getId());
+        assertEquals(text, saved.getText());
+        assertEquals(now, saved.getDateTime());
+    }
+
+    @Test
+    void saveThoughtWithNullQuote_shouldCreateThought() {
+        Thought th = Thought.of("text", LocalDateTime.now(), null);
+        Mockito.when(tr.save(Mockito.any(Thought.class))).thenReturn(TestUtils.withThoughtId(th, null));
+        Thought saved = stoicService.saveThought(th);
     }
 
     private Quote newQuote(String auth, String text) {
@@ -84,4 +100,20 @@ class StoicServiceTest {
         return q;
     }
 
+    @Test
+    void getQuoteById_nullId() {
+        Mockito.when(qr.findById(Mockito.longThat(Objects::isNull))).thenReturn(Optional.empty());
+        assertEquals(Optional.empty(), stoicService.getQuoteById(null));
+    }
+
+    @Test
+    void getQuotesWhereThoughtId() {
+        Long qid = 12L;
+        Thought t1 = Thought.of("1", LocalDateTime.now(), null);
+        Thought t2 = Thought.of("2", LocalDateTime.now(), null);
+        Thought t3 = Thought.of("3", LocalDateTime.now(), null);
+        Mockito.when(tr.findByQuoteId(Mockito.eq(qid))).thenReturn(List.of(t1, t2, t3));
+        stoicService.getThoughtsWhereQuoteId(qid);
+        Mockito.verify(tr).findByQuoteId(qid);
+    }
 }

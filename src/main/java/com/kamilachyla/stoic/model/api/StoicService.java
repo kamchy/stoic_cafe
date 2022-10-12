@@ -31,11 +31,11 @@ public class StoicService {
         return res;
     }
 
-    public Optional<Quote> getQuoteById(long id) {
-        return repo.findById(id);
+    public Optional<Quote> getQuoteById(Long id) {
+        return Optional.ofNullable(id).flatMap(repo::findById);
     }
 
-    public Iterable<Quote> getAllQuotes() {
+    public List<Quote> getAllQuotes() {
         return repo.findAll();
     }
 
@@ -50,7 +50,7 @@ public class StoicService {
         return savedTh;
     }
 
-    public Iterable<Thought> getAllThoughts() {
+    public List<Thought> getAllThoughts() {
         return thRepo.findAll();
     }
 
@@ -63,7 +63,7 @@ public class StoicService {
     }
 
 
-    public List<Thought> getThougthsWhereQuoteId(Long id) {
+    public List<Thought> getThoughtsWhereQuoteId(Long id) {
         var l = new ArrayList<Thought>();
         thRepo.findByQuoteId(id).forEach(t -> l.add(t));
         return l;

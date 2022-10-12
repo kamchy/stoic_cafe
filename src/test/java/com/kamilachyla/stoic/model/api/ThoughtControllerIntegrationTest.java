@@ -7,11 +7,11 @@ import com.kamilachyla.stoic.model.quote.Quote;
 import com.kamilachyla.stoic.model.thought.Thought;
 import org.hamcrest.core.StringEndsWith;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,9 +27,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class ThoughtControllerTest {
+@WebMvcTest(controllers = ThoughtController.class)
+class ThoughtControllerIntegrationTest {
 
     @MockBean
     StoicService service;
@@ -45,6 +44,9 @@ class ThoughtControllerTest {
 
     @Autowired
     ThoughtController ctrl;
+
+    @MockBean
+    TimeService timeService;
 
     @Test
     void controllerNotNull() {
@@ -67,7 +69,7 @@ class ThoughtControllerTest {
         String qtext = "bla";
         final var quoteId = 1000;
         Quote quote = TestUtils.withQuoteId(new Quote(new Quote.Author(author), new Quote.Text(qtext)), quoteId);
-        final var thoughtId = 123;
+        final var thoughtId = 123L;
         final var expectedObject = List.of(TestUtils.withThoughtId(Thought.of(text, date, quote), thoughtId));
         Mockito.when(service.getAllThoughts()).thenReturn(expectedObject);
         String expectedContent = objectMapper.writeValueAsString(expectedObject);
@@ -79,8 +81,11 @@ class ThoughtControllerTest {
     }
     @Test
     void checkAddingThoughtForNonExistingQuote() throws Exception {
-        Mockito.when(service.getQuoteById(Mockito.anyLong())).thenReturn(Optional.empty());
-
+        Mockito.when(service.getQuoteById(ArgumentMatchers.eq(Long.valueOf(30L)))).thenReturn(Optional.empty());
+        LocalDateTime localTime = LocalDateTime.now();
+        Mockito.when(timeService.get()).thenReturn(localTime);
+        Thought th = Thought.of("bla", localTime, null);
+        Mockito.when(service.saveThought(th)).thenReturn(th);
         mvc.perform(
                 post("/thought/")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -88,9 +93,10 @@ class ThoughtControllerTest {
                                 {"text":"bla", "quoteId":30}
                                 """)
                         ).andExpect(
-                                status().isNotFound());
+                                status().isCreated());
 
-        Mockito.verify(service).getQuoteById(Mockito.anyLong());
+        Mockito.verify(service).getQuoteById(ArgumentMatchers.eq(Long.valueOf(30L)));
+        Mockito.verify(service).saveThought(th);
         Mockito.verifyNoMoreInteractions(service);
     }
 

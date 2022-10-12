@@ -1,23 +1,19 @@
 package com.kamilachyla.stoic.model.api;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import com.kamilachyla.stoic.config.GlobalExceptionHandler;
+import com.kamilachyla.stoic.model.quote.Quote;
+import com.kamilachyla.stoic.model.thought.Thought;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.kamilachyla.stoic.model.quote.Quote;
-import com.kamilachyla.stoic.model.thought.Thought;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/quote")
@@ -30,16 +26,13 @@ public class QuoteController {
         this.service = service;
     }
 
-    public static record ClientQuote(String author, String text) {
-    }
-
     @PostMapping("/")
-    public ResponseEntity<Quote> addQuote(@RequestBody ClientQuote q) {
+    public ResponseEntity<Quote> addQuote(@RequestBody @Valid ClientQuote q) {
         var savedQuote = service.saveQuote(new Quote(new Quote.Author(q.author), new Quote.Text(q.text)));
         if (savedQuote == null) {
             return ResponseEntity.notFound().build();
         } else {
-            var uri = ServletUriComponentsBuilder.fromCurrentRequest()
+            var uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
                     .path("/{id}")
                     .buildAndExpand(savedQuote.getId())
                     .toUri();
@@ -60,20 +53,14 @@ public class QuoteController {
         return service.getQuoteById(id).map(q -> ResponseEntity.ok(q)).orElse(ResponseEntity.notFound().build());
     }
 
-    public record SimpleThought(Long id, String text) {
-    }
-
-    public record QuoteThoughts(Quote quote, List<SimpleThought> thought) {
-    }
-
     @GetMapping("/{id}/thoughts")
-    public ResponseEntity<QuoteThoughts> getThoughtsForQote(@PathVariable("id") Long id) {
+    public ResponseEntity<QuoteThoughts> getThoughtsForQuote(@PathVariable("id") Long id) {
         var quote = service.getQuoteById(id).orElse(null);
         if (quote == null) {
             return ResponseEntity.notFound().header("Message", "Quote not found").build();
         }
         List<SimpleThought> li = new ArrayList<>();
-        var ths = service.getThougthsWhereQuoteId(id);
+        var ths = service.getThoughtsWhereQuoteId(id);
         for (Thought th : ths) {
             li.add(new SimpleThought(th.getId(), th.getText()));
         }
@@ -90,15 +77,13 @@ public class QuoteController {
         return service.getAllQuotes();
     }
 
-    record ErrorResponse(String comment, String message, LocalDateTime date) {
+    public static record ClientQuote(@NotNull String author, @NotNull String text) {
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle(Exception e) {
-        log.error("Exception handler", e);
-        return ResponseEntity.badRequest()
-                .body(new ErrorResponse("Exception handler", e.getMessage(), LocalDateTime.now()));
+    public record SimpleThought(Long id, String text) {
+    }
 
+    public record QuoteThoughts(Quote quote, List<SimpleThought> thought) {
     }
 
 }

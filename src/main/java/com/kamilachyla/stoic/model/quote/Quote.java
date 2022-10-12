@@ -16,11 +16,15 @@ import java.util.Objects;
         name = "uc_quote_text",
         columnNames = {"text"}))
 public class Quote {
+    public static final String GENERATOR_NAME = "mygenerator";
+    public static final String SEQUENCE_NAME = "hibernate_sequence";
     @OneToMany(mappedBy = "quote", fetch = FetchType.EAGER)
     @JsonIgnore
     List<Thought> thoughts;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = GENERATOR_NAME)
+    // see changeset kamila:5
+    @SequenceGenerator(name = GENERATOR_NAME, sequenceName = SEQUENCE_NAME, allocationSize = 50)
     @JsonAlias("ID")
     private Long id;
     @NotNull
@@ -33,6 +37,7 @@ public class Quote {
 
     }
 
+    // TODO create static factory
     public Quote(Author author, Text text) {
         this.author = author.name();
         this.text = text.value();

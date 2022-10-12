@@ -1,0 +1,9 @@
+
+src/main/docker
+target/
+postgres-data/
+.git
+.vscode
+.idea
+.settings
+!target/stoic-0.0.1-SNAPSHOT.jar

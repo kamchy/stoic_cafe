@@ -1,13 +1,11 @@
 package com.kamilachyla.stoic.model.api;
 
-import com.kamilachyla.stoic.model.quote.Quote;
 import com.kamilachyla.stoic.model.thought.Thought;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @RestController
@@ -15,6 +13,7 @@ import java.util.Optional;
 public class ThoughtController {
     private final StoicService service;
     private final TimeService timeService;
+
     ThoughtController(StoicService service, TimeService timeService) {
         this.service = service;
         this.timeService = timeService;
@@ -37,15 +36,13 @@ public class ThoughtController {
     @PostMapping
     public ResponseEntity<Thought> postThought(@RequestBody ClientThought th) {
         final var quoteById = service.getQuoteById(th.quoteId());
-        if (quoteById.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        var thought = Thought.of(th.text(), timeService.get(), quoteById.get());
+
+        var thought = Thought.of(th.text(), timeService.get(), quoteById.orElse(null));
         var savedThought = service.saveThought(thought);
         if (savedThought == null) {
             return ResponseEntity.notFound().build();
         } else {
-            var uri = uriWithId(savedThought.getId());
+            var uri = uriWithId(Optional.ofNullable(savedThought.getId()).orElse(-1L));
 
             return ResponseEntity.created(uri).location(uri)
                     .body(savedThought);

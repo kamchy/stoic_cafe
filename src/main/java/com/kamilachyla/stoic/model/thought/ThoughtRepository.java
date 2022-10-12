@@ -1,3 +1,4 @@
+
 package com.kamilachyla.stoic.model.thought;
 
 import org.springframework.data.jpa.repository.JpaRepository;

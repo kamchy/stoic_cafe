@@ -16,7 +16,7 @@ public final class TestUtils {
         return qwid;
     }
 
-    static Thought withThoughtId(Thought th, long thoughtId) {
+    static Thought withThoughtId(Thought th, Long thoughtId) {
         var res = Thought.of(th.getText(), th.getDateTime(), th.getQuote());
         res.setId(thoughtId);
         return res;

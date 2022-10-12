@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Thought", uniqueConstraints = {
@@ -14,7 +15,8 @@ public class Thought {
     public static final String STRING_FMT = "[Date: %s, Th: %s, Q: %s]";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = Quote.GENERATOR_NAME)
+    @SequenceGenerator(name = Quote.GENERATOR_NAME, sequenceName = Quote.SEQUENCE_NAME , allocationSize = 50)
     private Long id;
     private String text;
     private LocalDateTime dateTime;
@@ -66,8 +68,21 @@ public class Thought {
     public static Thought of(String text, LocalDateTime now, Quote quote) {
         var th = new Thought();
         th.text = text;
-        th.dateTime = LocalDateTime.now();
+        th.dateTime = now;
         th.quote = quote;
         return th;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Thought thought = (Thought) o;
+        return text.equals(thought.text) && dateTime.equals(thought.dateTime) && Objects.equals(quote, thought.quote);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(text, dateTime, quote);
     }
 }
