@@ -20,6 +20,8 @@
   <p align="center">
     This project helps you with your morning stoic meditation.
     <br />
+    It provides services for storing, listing, adding quotes and attaching
+    thoughts that come to your mind when meditatin on the quotes.
     <br />
     <a href="https://github.com/kamchy/stoic_cafe/issues">Report Bug</a>
     ·
@@ -132,11 +134,13 @@ bring stoic wisdom into your life, making you much calmer, much balanced and muc
   - [ ] display random quote
   - [ ] allow to change it
   - [ ] display related thoughts
-  - [ ] allow to add thought
+  - [ ] allow to add thought related to a quote
 - [ ] Allow browsing quotes
   - [ ] with attached thoughts
-- [ ] Allow browsing thought
-      - [ ] export quotes and thoughts
+- [ ] Allow browsing thoughts
+   -  [ ]  display quote (if  athought is related to it)
+- [ ] Allow adding unrelated thoughts
+    - [ ] export quotes and thoughts
 
 See the [open issues](https://github.com/kamchy/stoic_cafe/issues) for a full list of proposed features (and known issues).
 
@@ -172,8 +176,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- CONTACT -->
 ## Contact
-
-Kamila Chyla - [@KamilaChylaCom](https://twitter.com/KamilaChylaCom) - kamila.chyla@gmail.com
 
 Project Link: [https://github.com/kamchy/stoic_cafe](https://github.com/kamchy/stoic_cafe)
 
