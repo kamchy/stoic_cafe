@@ -45,7 +45,7 @@ public class StoicConfiguration {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                     .allowedOrigins(host.formatted(guiPort), host.formatted(serverPort))
-                    .allowedMethods("GET", "POST", "DELETE");
+                    .allowedMethods("GET", "POST", "DELETE", "PUT");
             }
         };
     }

@@ -68,6 +68,11 @@ public class Quote {
         this.id = id;
     }
 
+    public void update(String author, String text) {
+        setAuthor(author);
+        setText(text);
+    }
+
     @JsonProperty
     public int thoughtsCount() {
         return thoughts == null ? 0 : thoughts.size();

@@ -2,6 +2,7 @@ package com.kamilachyla.stoic.model.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamilachyla.stoic.model.quote.Quote;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.mockito.ArgumentMatchers.eq;
+
 @WebMvcTest
-class QuoteControllerIntegrationTest {
+class QuoteControllerMvcTest {
 
     @MockBean
     StoicService stoicService;
@@ -118,4 +121,29 @@ class QuoteControllerIntegrationTest {
         Mockito.verify(stoicService).saveQuote(Mockito.any(Quote.class));
     }
 
-}
+    @Test
+    void updateQuoteUsingPut() {
+        final QuoteController.ClientQuote input = new QuoteController.ClientQuote("Marcus", "good job");
+        final QuoteController.ClientQuote expected = new QuoteController.ClientQuote("Marcus", "Good job, girl!");
+        final var quoteId = 1;
+        var quote = new Quote(new Quote.Author("Marcus"), new Quote.Text("Good job, girl!"));
+        quote.setId(quoteId);
+
+        //Mockito.when(stoicService.update(eq(quoteId), eq(input))).thenReturn(Optional.of(quote));
+
+        var req = MockMvcRequestBuilders.put("/quote/" + quoteId).contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(input));
+        try {
+
+            mvc.perform(req).andExpect(result ->  asJsonString(expected));
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assertions.fail(e);
+        }
+    }
+
+    public static void main(String[] args) {
+        System.out.printf(asJsonString(new QuoteController.ClientQuote("Kamila", "foo")));
+    }
+ }

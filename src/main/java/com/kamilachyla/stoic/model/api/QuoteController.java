@@ -42,6 +42,16 @@ public class QuoteController {
         }
 
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Quote> updateQuote(@PathVariable("id") long id, @RequestBody @Valid ClientQuote q) {
+        var quote = service.getQuoteById(id);
+        if (quote.isPresent()) {
+            var updated = service.update(id, q);
+            return ResponseEntity.ok(updated.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     @GetMapping("/ms")
     public String getManagementString() {

@@ -68,4 +68,13 @@ public class StoicService {
         thRepo.findByQuoteId(id).forEach(t -> l.add(t));
         return l;
     }
+
+    Optional<Quote> update(long id, QuoteController.ClientQuote q) {
+        return repo.findById(id).map(quote -> {
+            quote.setAuthor(q.author());
+            quote.setText(q.text());
+            repo.save(quote);
+            return quote;
+        });
+    }
 }
