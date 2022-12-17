@@ -29,8 +29,9 @@ public class GlobalExceptionHandler {
         public ResponseEntity<ErrorResponse> genericException(
                 Exception ex,
                 HttpServletRequest request) {
+            var message = ex.getLocalizedMessage() + " from request " + request.getRequestURI();
             return new ResponseEntity<>(
-                    new ErrorResponse("Exception handler", ex.getLocalizedMessage(), LocalDateTime.now()),
+                    new ErrorResponse("Exception handler", message, LocalDateTime.now()),
                     HttpStatus.BAD_REQUEST);
         }
 

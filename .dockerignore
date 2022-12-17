@@ -1,5 +1,3 @@
-
-src/main/docker
 target/
 postgres-data/
 .git

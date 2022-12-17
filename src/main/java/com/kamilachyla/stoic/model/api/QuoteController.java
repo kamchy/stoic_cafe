@@ -18,9 +18,9 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/quote")
 public class QuoteController {
-    public static final String MANAGEMENT_STRING = "Hello, Java";
+    public static final String MANAGEMENT_STRING = "Hello, new home";
     private final StoicService service;
-    private final Logger log = LoggerFactory.getLogger(QuoteController.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(QuoteController.class);
 
     QuoteController(StoicService service) {
         this.service = service;
@@ -42,6 +42,7 @@ public class QuoteController {
         }
 
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<Quote> updateQuote(@PathVariable("id") long id, @RequestBody @Valid ClientQuote q) {
         var quote = service.getQuoteById(id);

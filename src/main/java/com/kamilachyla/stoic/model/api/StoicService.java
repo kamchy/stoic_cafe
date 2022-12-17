@@ -65,7 +65,7 @@ public class StoicService {
 
     public List<Thought> getThoughtsWhereQuoteId(Long id) {
         var l = new ArrayList<Thought>();
-        thRepo.findByQuoteId(id).forEach(t -> l.add(t));
+        thRepo.findByQuoteId(id).forEach(l::add);
         return l;
     }
 
