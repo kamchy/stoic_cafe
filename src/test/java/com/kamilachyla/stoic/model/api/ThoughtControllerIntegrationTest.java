@@ -64,7 +64,7 @@ class ThoughtControllerIntegrationTest {
     @Test
     void checkControllerGetsAllThoughtsWhenSingle() throws Exception {
         String text = "test";
-        LocalDateTime date = LocalDateTime.of(2022, 12, 03, 15, 23, 11);
+        LocalDateTime date = LocalDateTime.of(2022, 12, 3, 15, 23, 11);
         String author = "me";
         String qtext = "bla";
         final var quoteId = 1000;

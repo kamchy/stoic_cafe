@@ -87,7 +87,7 @@ This is my playground, nothing serious, just having fun and learning.
 <!-- GETTING STARTED -->
 ## Getting Started
 
-You may try to build this project locally and start two containers: application container and and postgresql container. See `docker-compose.yaml` for details.
+You may try to build this project locally and start two containers: application container and postgresql container. See `docker-compose.yaml` for details.
 
 ### Prerequisites
 
@@ -105,7 +105,7 @@ You may try to build this project locally and start two containers: application 
    ```sh
    mvn clean package
    ```
-1. Build images and run with
+3. Build images and run with
    ```sh
    docker compose up
    ```

@@ -25,7 +25,7 @@ class ThoughtTest {
             final var text = String.format("Thought %s", i);
             final var expectedThought = Thought.of(text, nextDate, quote);
             res[i] = new Object[]{expectedThought.getText(), expectedThought.getDateTime(), expectedThought.getQuote(), expectedThought};
-        };
+        }
         return res;
     }
 
