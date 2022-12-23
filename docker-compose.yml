@@ -19,7 +19,7 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
 
   gui:
-    image: 'kamila/react_simple_dock:latest'
+    image: 'kamchy/react_simple_dock:latest'
     container_name: react_simple_dock
     build:
       context: ../simple

@@ -11,7 +11,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/kamchy/stoic_cafe">
+  <a href="https://github.com/kamchy/stoic_cafe" >
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -200,9 +200,9 @@ Blog posts:
 [license-url]: https://github.com/kamchy/stoic_cafe/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/kamila_chyla
-[boot.io]: https://img.shields.io/badge/boot.io-000000?style=for-the-badge&logo=springboot&logoColor=6DB33F
+[boot.io]: https://img.shields.io/badge/boot.io-35495E?style=for-the-badge&logo=springboot
 [Spring-boot]: https://boot.io
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React.js]: https://img.shields.io/badge/React-35495E?style=for-the-badge&logo=react
 [React-url]: https://reactjs.org/
 [Java-badge]: https://img.shields.io/badge/openjdk-35495E?style=for-the-badge&logo=openjdk&logoColor=0000
 [Java-url]: https://docs.oracle.com/en/java/javase/17/docs/api/index.html
