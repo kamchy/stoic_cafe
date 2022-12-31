@@ -4,37 +4,38 @@ package com.kamilachyla.stoic.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
+import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.xml.bind.ValidationException;
-import java.time.LocalDateTime;
+import java.net.URI;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-        @ExceptionHandler({ValidationException.class})
-        public ResponseEntity<ErrorResponse> validationException(
+        @ExceptionHandler(ValidationException.class)
+        public ProblemDetail validationException(
                 ValidationException ex,
                 HttpServletRequest request){
-
-            return new ResponseEntity<>(
-                    new ErrorResponse("Validation failed", ex.getLocalizedMessage(), LocalDateTime.now()),
-                    HttpStatus.BAD_REQUEST);
+            return detailFromException(ex, request, "Validation exception");
         }
 
-        @ExceptionHandler({Exception.class})
-        public ResponseEntity<ErrorResponse> genericException(
+        @ExceptionHandler
+        public ProblemDetail genericException(
                 Exception ex,
                 HttpServletRequest request) {
-            var message = ex.getLocalizedMessage() + " from request " + request.getRequestURI();
-            return new ResponseEntity<>(
-                    new ErrorResponse("Exception handler", message, LocalDateTime.now()),
-                    HttpStatus.BAD_REQUEST);
+            return detailFromException(ex, request, "Exception");
+
         }
 
-        public record ErrorResponse(String comment, String message, LocalDateTime date) {
+    private static ProblemDetail detailFromException(Exception ex, HttpServletRequest request, String title) {
+        var message = ex.getMessage();
+        var result = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        result.setDetail(message);
+        result.setInstance(URI.create(request.getRequestURI()));
+        result.setTitle(title);
+        return result;
     }
 }

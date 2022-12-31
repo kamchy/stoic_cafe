@@ -107,10 +107,6 @@ class ThoughtControllerIntegrationTest {
         thought.setText("bla");
         long thoughtId = 123;
         thought.setQuote(quote);
-       // LocalDateTime nowTime = LocalDateTime.now();
-        //thought.setDateTime(nowTime);
-        // Why this test passes? verification of timeservice mock should be invalid!
-        //Mockito.when(timeService.get()).thenReturn(nowTime);
         Mockito.when(service.getQuoteById(Mockito.anyLong())).thenReturn(Optional.of(quote));
         Mockito.when(service.saveThought(Mockito.any(Thought.class))).thenReturn(TestUtils.withThoughtId(thought, thoughtId));
 

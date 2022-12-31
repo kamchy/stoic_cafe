@@ -3,6 +3,7 @@ package com.kamilachyla.stoic.model.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kamilachyla.stoic.model.quote.Quote;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.Optional;
 
 @WebMvcTest
 class QuoteControllerMvcTest {
@@ -24,6 +27,8 @@ class QuoteControllerMvcTest {
     QuoteController quoteController;
     @Autowired
     private MockMvc mvc;
+    final Long quoteId = 1L;
+    final QuoteController.ClientQuote sampleClientQuote = new QuoteController.ClientQuote("Marcus", "good job", quoteId);
 
     public static String asJsonString(final Object obj) {
         try {
@@ -35,7 +40,7 @@ class QuoteControllerMvcTest {
 
     @Test
     void addQuote() throws Exception {
-        final var quote = new Quote(new Quote.Author("Kamila"), new Quote.Text("asd"));
+        final var quote = new Quote(new Quote.Author("Kamila"), new Quote.Text("Smart text"));
         final var id = 123L;
         quote.setId(id);
         Mockito.when(stoicService.saveQuote(Mockito.any(Quote.class))).thenReturn(quote);
@@ -44,7 +49,7 @@ class QuoteControllerMvcTest {
                         .post("/quote/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new QuoteController.ClientQuote("kamila", "hello"))))
+                        .content(asJsonString(new QuoteController.ClientQuote("kamila", "hello", 354l))))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.header().exists("location"))
                 .andExpect(MockMvcResultMatchers.header().string("location", "http://localhost/quote/%d".formatted(id)));
@@ -58,9 +63,8 @@ class QuoteControllerMvcTest {
                             .post("/quote/")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(new QuoteController.ClientQuote(null, "hello"))))
-                    .andExpect(MockMvcResultMatchers.jsonPath("message").exists())
-                    .andExpect(MockMvcResultMatchers.jsonPath("comment").value("Exception handler"))
+                            .content(asJsonString(new QuoteController.ClientQuote(null, "hello", null))))
+                    .andExpect(MockMvcResultMatchers.jsonPath("title").value("Bad Request"))
                     .andExpect(MockMvcResultMatchers.status().isBadRequest());
         } catch (Exception e) {
             System.out.printf("exception class is %s%n message is: %s", e.getClass(), e.getMessage());
@@ -76,9 +80,9 @@ class QuoteControllerMvcTest {
                             .post("/quote/")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(new QuoteController.ClientQuote("kamila", null))))
-                    .andExpect(MockMvcResultMatchers.jsonPath("message").exists())
-                    .andExpect(MockMvcResultMatchers.jsonPath("comment").value("Exception handler"))
+                            .content(asJsonString(new QuoteController.ClientQuote("kamila", null, null))))
+                    .andExpect(MockMvcResultMatchers.jsonPath("detail").exists())
+                    .andExpect(MockMvcResultMatchers.jsonPath("title").value("Bad Request"))
                     .andExpect(MockMvcResultMatchers.status().isBadRequest());
         } catch (Exception e) {
             System.out.printf("exception class is %s%n message is: %s", e.getClass(), e.getMessage());
@@ -94,8 +98,7 @@ class QuoteControllerMvcTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
                             .content(asJsonString(null)))
-                    .andExpect(MockMvcResultMatchers.jsonPath("message").exists())
-                    .andExpect(MockMvcResultMatchers.jsonPath("comment").value("Exception handler"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("title").value("Bad Request"))
                     .andExpect(MockMvcResultMatchers.status().isBadRequest());
         } catch (Exception e) {
             System.out.printf("exception class is %s%n message is: %s", e.getClass(), e.getMessage());
@@ -111,7 +114,7 @@ class QuoteControllerMvcTest {
                             .post("/quote/")
                             .contentType(MediaType.APPLICATION_JSON)
                             .accept(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(new QuoteController.ClientQuote("kamila", "quote me"))))
+                            .content(asJsonString(new QuoteController.ClientQuote("kamila", "quote me", null))))
                     .andExpect(MockMvcResultMatchers.status().isNotFound());
         } catch (Exception e) {
             System.out.printf("exception class is %s%n message is: %s", e.getClass(), e.getMessage());
@@ -120,21 +123,61 @@ class QuoteControllerMvcTest {
     }
 
     @Test
-    void updateQuoteUsingPut() {
-        final QuoteController.ClientQuote input = new QuoteController.ClientQuote("Marcus", "good job");
-        final QuoteController.ClientQuote expected = new QuoteController.ClientQuote("Marcus", "Good job, girl!");
-        final var quoteId = 1;
-        var quote = new Quote(new Quote.Author("Marcus"), new Quote.Text("Good job, girl!"));
-        quote.setId(quoteId);
+    @Tag("put")
+    void putQuoteExistingShouldResultOk() {
 
-        //Mockito.when(stoicService.update(eq(quoteId), eq(input))).thenReturn(Optional.of(quote));
-
-        var req = MockMvcRequestBuilders.put("/quote/" + quoteId).contentType(MediaType.APPLICATION_JSON)
+        var req = MockMvcRequestBuilders
+                .put("/quote/" + quoteId).contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(asJsonString(input));
+                .content(asJsonString(sampleClientQuote));
+        Quote quote = createQuoteFromClientQuoteAndId(sampleClientQuote, sampleClientQuote.id());
+        Mockito.when(stoicService.update(quoteId, sampleClientQuote)).thenReturn(Optional.of(quote));
+        try {
+            mvc.perform(req)
+                    .andExpect(result -> asJsonString(sampleClientQuote))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assertions.fail(e);
+        }
+    }
+
+    private Quote createQuoteFromClientQuoteAndId(QuoteController.ClientQuote input, Long id) {
+        Quote quote = new Quote(new Quote.Author(input.author()), new Quote.Text(input.text()));
+        quote.setId(id);
+        return quote;
+    }
+
+
+    @Test
+    @Tag("put")
+    void putQuoteNotExistingShouldResultNotFoud() {
+        Mockito.when(stoicService.update(quoteId, sampleClientQuote)).thenReturn(Optional.empty());
+        var req = MockMvcRequestBuilders
+                .put("/quote/" + quoteId).contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(asJsonString(sampleClientQuote));
         try {
 
-            mvc.perform(req).andExpect(result ->  asJsonString(expected));
+            mvc.perform(req)
+                    .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Assertions.fail(e);
+        }
+    }
+
+    @Test
+    void getQuoteWithNonExitingId() {
+        long quoteId = 1234L;
+        var req = MockMvcRequestBuilders.get("/quote/" + quoteId).contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON);
+        Mockito.when(stoicService.getQuoteById(Mockito.eq(quoteId))).thenReturn(Optional.empty());
+        try {
+
+            mvc.perform(req)
+                    .andExpect(MockMvcResultMatchers.status().isNotFound());
         } catch (Exception e) {
             e.printStackTrace();
             Assertions.fail(e);
@@ -142,6 +185,6 @@ class QuoteControllerMvcTest {
     }
 
     public static void main(String[] args) {
-        System.out.printf(asJsonString(new QuoteController.ClientQuote("Kamila", "foo")));
+        System.out.printf(asJsonString(new QuoteController.ClientQuote("Kamila", "foo", null)));
     }
- }
+}

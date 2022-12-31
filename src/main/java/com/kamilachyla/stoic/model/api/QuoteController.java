@@ -1,6 +1,5 @@
 package com.kamilachyla.stoic.model.api;
 
-import com.kamilachyla.stoic.config.GlobalExceptionHandler;
 import com.kamilachyla.stoic.model.quote.Quote;
 import com.kamilachyla.stoic.model.thought.Thought;
 import jakarta.validation.Valid;
@@ -11,14 +10,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.time.LocalDateTime;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/quote")
 public class QuoteController {
-    public static final String MANAGEMENT_STRING = "Hello, new home";
     private final StoicService service;
     private final Logger LOGGER = LoggerFactory.getLogger(QuoteController.class);
 
@@ -27,41 +26,36 @@ public class QuoteController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Quote> addQuote(@RequestBody @Valid ClientQuote q) {
+    public ResponseEntity<ClientQuote> addQuote(@RequestBody @Valid ClientQuote q) {
+        LOGGER.info("Post {}", q);
         var savedQuote = service.saveQuote(new Quote(new Quote.Author(q.author), new Quote.Text(q.text)));
-        if (savedQuote == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            var uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
-                    .path("/{id}")
-                    .buildAndExpand(savedQuote.getId())
-                    .toUri();
+        var clientQuote = ClientQuote.from(Optional.ofNullable(savedQuote));
+        return clientQuote
+                .map(quote -> ResponseEntity.created(createUri(quote.id)).body(quote))
+                .orElseGet(()-> ResponseEntity.notFound().build());
 
-            return ResponseEntity.created(uri).location(uri)
-                    .body(savedQuote);
-        }
+    }
 
+    private static URI createUri(Long id) {
+        return ServletUriComponentsBuilder.fromCurrentRequestUri()
+                .path("/{id}")
+                .buildAndExpand(id)
+                .toUri();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Quote> updateQuote(@PathVariable("id") long id, @RequestBody @Valid ClientQuote q) {
-        var quote = service.getQuoteById(id);
-        if (quote.isPresent()) {
-            var updated = service.update(id, q);
-            return ResponseEntity.ok(updated.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/ms")
-    public String getManagementString() {
-        return MANAGEMENT_STRING;
+    public ResponseEntity<ClientQuote> updateQuote(@PathVariable("id") long id, @RequestBody @Valid ClientQuote q) {
+        var updated = ClientQuote.from(service.update(id, q));
+        return updated
+                .map(ResponseEntity.ok()::body)
+                .orElseGet(()-> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Quote> getQuote(@PathVariable("id") long id) {
-        return service.getQuoteById(id).map(q -> ResponseEntity.ok(q)).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ClientQuote> getQuote(@PathVariable("id") long id) {
+        var quote = ClientQuote.from(service.getQuoteById(id));
+        return quote.map(ResponseEntity.ok()::body)
+                .orElseGet(()->ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}/thoughts")
@@ -84,11 +78,16 @@ public class QuoteController {
     }
 
     @GetMapping("/")
-    public Iterable<Quote> getQuotesBy() {
-        return service.getAllQuotes();
+    public Iterable<ClientQuote> getQuotesBy() {
+        LOGGER.info("Get all quotes");
+        return service.getAllQuotes().stream().map(q -> new ClientQuote(q.getAuthor(), q.getText(), q.getId())).toList();
     }
-
-    public static record ClientQuote(@NotNull String author, @NotNull String text) {
+    public record ClientQuote(
+            @NotNull(message = "Author cannot be empty") String author,
+            @NotNull(message = "Text cannot be empty") String text, Long id) {
+        public static Optional<ClientQuote> from(Optional<Quote> updated) {
+            return updated.map(q -> new ClientQuote(q.getAuthor(), q.getText(), q.getId()));
+        }
     }
 
     public record SimpleThought(Long id, String text) {

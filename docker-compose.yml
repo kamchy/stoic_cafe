@@ -2,11 +2,10 @@ version: '2'
 
 services:
   app:
-    image: 'stoic-backend:v1.0.0'
-
+    image: kamchy/stoic-backend:latest
     build:
       context: .
-    container_name: boot-stoic-docker-app
+    container_name: stoic-backend
     depends_on:
       - db
     environment:
@@ -19,8 +18,8 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
 
   gui:
-    image: 'kamchy/react_simple_dock:latest'
-    container_name: react_simple_dock
+    container_name: stoic-frontend
+    image: kamchy/stoic-frontend:latest
     build:
       context: ../simple
     depends_on:

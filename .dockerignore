@@ -1,5 +1,5 @@
 target/
-postgres-data/
+postgres-data
 .git
 .vscode
 .idea
