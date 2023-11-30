@@ -181,8 +181,8 @@ Project Link: [https://github.com/kamchy/stoic_cafe](https://github.com/kamchy/s
 
 Blog posts: 
 
- * [https://kamilachyla.com/en/docker-example](https://kamilachyla.com/en/docker-example)
- * [https://kamilachyla.com/en/docker-volumes](https://kamilachyla.com/en/docker-volumes)
+ * [https://kamilachyla.com/en/posts/docker-example](https://kamilachyla.com/en/posts/docker-example)
+ * [https://kamilachyla.com/en/posts/docker-volumes](https://kamilachyla.com/en/posts/docker-volumes)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
